@@ -1,1 +1,3 @@
 .vagrant/
+.cloudify/
+local-storage/
