@@ -1,50 +1,36 @@
-# Step 5 - Add inputs to connect to SSH
+# Step 6 - Implement start/stop lifecycle operations
 
-The `Vagrantfile` configuration has been updated to make sure that the VM
-always gets the same IP address:
+The scripts to start/stop a service using `systemd` have been added to
+`scripts/systemd` and `blueprint.yaml` has been updated to import the fabric
+plugin and call the scripts using it. Note the use of the `dsl_definitions`
+section to avoid duplication in the script execution specification.
 
-```ruby
-config.vm.network "private_network", ip: "192.168.33.10"
-```
+After the blueprint has been updated, use the following command to install the
+fabric plugin:
 
-this will be useful to connect to the VM through SSH.
+    cfy local install-plugins -p blueprint.yaml
 
 After the configuration update, please keep in mind to restart the VM with these commands:
 
     vagrant halt
     vagrant up
 
-The inputs needed to connect to the vagrant VM have been set as follows:
+After that, you'll be able to execute the scripts for the install/uninstall
+workflows as follows:
 
-```json
-{
-  "host_ip": "192.168.33.10",
-  "ssh_user": "vagrant",
-  "ssh_private_key_path": ".vagrant/machines/default/virtualbox/private_key"
-}
-```
+    cfy local execute -w install
+    cfy local execute -w uninstall
 
-where the `host_ip` value is the same one set for vagrant.
-
-The schema for the values in the input file has been added to `blueprint.yaml`.
-
-Note that the cloudify environment now needs to be initialized with the inputs
-file to avoid validation errors:
-
-    cfy local init -p blueprint.yaml -i inputs.json
+The scripts right now will fail because the `mongod` service is not available
+in the CentOS, but that will be fixed in a future step.
 
 Whenever you're ready, the next task is:
 
-    - Implement scripts to start/stop a service named `service_name` using
-      `systemctl`
-    - Update `systemd` node type to call the scripts for the start/stop
-      lifecycle operations using the fabric plugin
-    - Verify that the scripts are indeed called when the install/uninstall
-      workflows are executed
+    - Move the `systemd` node type definition to a separate yaml file, so that
+      it can be reused in other blueprints if needed.
 
-Once you're done, please check out `step-06` branch to compare with the provided
+Once you're done, please check out `step-07` branch to compare with the provided
 solution and get instructions for the next step.
 
 Hints:
-- [Fabric plugin documentation](http://docs.getcloudify.org/3.4.0/plugins/fabric/)
-- [Built-in workflows documentation](http://docs.getcloudify.org/3.4.0/workflows/built-in-workflows/)
+- [Imports documentation](http://docs.getcloudify.org/3.4.0/blueprints/spec-imports/)
