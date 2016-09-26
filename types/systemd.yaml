@@ -18,6 +18,10 @@ node_types:
       service_name:
         type: string
         description: systemd service name
+      service_binary_path:
+        type: string
+        description: Path to service binary (if service file needs to be created)
+        default: null
     interfaces:
       cloudify.interfaces.lifecycle:
         start:
