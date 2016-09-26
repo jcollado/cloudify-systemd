@@ -1,27 +1,21 @@
-# Step 9 - Implement create/delete operations for app service
+# Step 10 - Implement configure operation for systemd node type
 
-The blueprint has been updated to include a node template for the new app
-service that will run in the same VM. The scripts to create/delete the app
-service dependencies have been added to the `scripts` directory in the same way
-the install/uninstall scripts are called in the `systemd` node type definition.
+The configure script is available `scripts/systemd/systemd-configure.py` while
+the yaml files for both the `systemd` node type and the example blueprint have
+been updated so that a systemd service is generated when needed.
 
-As you probably have noticed, the install/uninstall script don't work for the
-`app` service because there is no service file for it. This will be addressed
-in the next step.
+Now the behavior is just as expected, but it's not easy to verify when MongoDB
+and the flask application are running. Being able to check that easily will be
+the goal of the next step.
 
 Whenever you're ready, the next task is:
 
-    - Add a new property named `service_binary_path` to the `systemd` node type
-    - Set that property for the `app` node template to the path available in
-      the VM through the synced folder
-    - Implement the `configure` operation for the `systemd` node type, so that
-      a default service file is automatically created when the path to the
-      binary is provided.
+    - Update the vagrant configuration file to expose MongoDB and flask
+      application ports to be able to check if the services are runnnig from
+      the host machine.
 
-Once you're done, please check out `step-10` branch to compare with the provided
+Once you're done, please check out `step-11` branch to compare with the provided
 solution and get instructions for the next step.
 
 Hints:
-- [Node type properties documentation](http://docs.getcloudify.org/3.3.1/blueprints/spec-node-types/#properties)
-- [Vagrant synced folders documentation](https://www.vagrantup.com/docs/synced-folders/index.html)
-- [Built-in workflows documentation](http://docs.getcloudify.org/3.4.0/workflows/built-in-workflows/)
+- [Vagrant forwarded ports](https://www.vagrantup.com/docs/networking/forwarded_ports.html)
