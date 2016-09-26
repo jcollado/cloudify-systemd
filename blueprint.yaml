@@ -1,5 +1,12 @@
 tosca_definitions_version: cloudify_dsl_1_3
 
+dsl_definitions:
+  - &fabric_script
+    use_sudo: true
+    fabric_env:
+      user: { get_input: ssh_user }
+      key_filename: { get_input: ssh_private_key_path }
+
 description: Run services using systemd node type
 
 imports:
@@ -32,3 +39,15 @@ node_templates:
         target: vagrant_vm
     properties:
       service_name: mongod
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            <<: *fabric_script
+            script_path: scripts/mongod-create.py
+        delete:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            <<: *fabric_script
+            script_path: scripts/mongod-delete.py
