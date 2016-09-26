@@ -59,6 +59,7 @@ node_templates:
         target: vagrant_vm
     properties:
       service_name: app
+      service_binary_path: /vagrant/scripts/app.py
     interfaces:
       cloudify.interfaces.lifecycle:
         create:
