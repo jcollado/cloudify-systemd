@@ -5,6 +5,17 @@ description: Run services using systemd node type
 imports:
   - http://www.getcloudify.org/spec/cloudify/3.4/types.yaml
 
+inputs:
+  host_ip:
+    description: IP address where the vagrant VM is running
+    type: string
+  ssh_user:
+    description: User name when connecting through SSH
+    type: string
+  ssh_private_key_path:
+    description: Path to the private key to connect through SSH
+    type: string
+
 node_types:
   systemd:
     derived_from: cloudify.nodes.SoftwareComponent
@@ -16,6 +27,9 @@ node_types:
 node_templates:
   vagrant_vm:
     type: cloudify.nodes.Compute
+    properties:
+      ip: { get_input: host_ip }
+      install_agent: false
 
   mongod:
     type: systemd
