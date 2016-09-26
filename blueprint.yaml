@@ -51,3 +51,23 @@ node_templates:
           inputs:
             <<: *fabric_script
             script_path: scripts/mongod-delete.py
+
+  app:
+    type: systemd
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: vagrant_vm
+    properties:
+      service_name: app
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            <<: *fabric_script
+            script_path: scripts/app-create.py
+        delete:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            <<: *fabric_script
+            script_path: scripts/app-delete.py
