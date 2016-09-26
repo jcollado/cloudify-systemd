@@ -1,23 +1,11 @@
 tosca_definitions_version: cloudify_dsl_1_3
 
-dsl_definitions:
-  - &fabric_script
-    service_name:
-      type: string
-      default: { get_property: [SELF, service_name] }
-    use_sudo:
-      type: boolean
-      default: true
-    fabric_env:
-      default:
-        user: { get_input: ssh_user }
-        key_filename: { get_input: ssh_private_key_path }
-
 description: Run services using systemd node type
 
 imports:
   - http://www.getcloudify.org/spec/cloudify/3.4/types.yaml
   - http://www.getcloudify.org/spec/fabric-plugin/1.4.2/plugin.yaml
+  - types/systemd.yaml
 
 inputs:
   host_ip:
@@ -29,30 +17,6 @@ inputs:
   ssh_private_key_path:
     description: Path to the private key to connect through SSH
     type: string
-
-node_types:
-  systemd:
-    derived_from: cloudify.nodes.SoftwareComponent
-    properties:
-      service_name:
-        type: string
-        description: systemd service name
-    interfaces:
-      cloudify.interfaces.lifecycle:
-        start:
-          implementation: fabric.fabric_plugin.tasks.run_script
-          inputs:
-            <<: *fabric_script
-            script_path:
-              type: string
-              default: scripts/systemd/systemd-start.sh
-        stop:
-          implementation: fabric.fabric_plugin.tasks.run_script
-          inputs:
-            <<: *fabric_script
-            script_path:
-              type: string
-              default: scripts/systemd/systemd-stop.sh
 
 node_templates:
   vagrant_vm:
