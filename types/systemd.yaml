@@ -3,6 +3,9 @@ dsl_definitions:
     service_name:
       type: string
       default: { get_property: [SELF, service_name] }
+    service_binary_path:
+      type: string
+      default: { get_property: [SELF, service_binary_path] }
     use_sudo:
       type: boolean
       default: true
@@ -24,6 +27,13 @@ node_types:
         default: null
     interfaces:
       cloudify.interfaces.lifecycle:
+        configure:
+          implementation: fabric.fabric_plugin.tasks.run_script
+          inputs:
+            <<: *fabric_script
+            script_path:
+              type: string
+              default: scripts/systemd/systemd-configure.py
         start:
           implementation: fabric.fabric_plugin.tasks.run_script
           inputs:
