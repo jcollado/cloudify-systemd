@@ -1,36 +1,16 @@
-# Step 6 - Implement start/stop lifecycle operations
+# Step 7 - Move node type definition to separate file
 
-The scripts to start/stop a service using `systemd` have been added to
-`scripts/systemd` and `blueprint.yaml` has been updated to import the fabric
-plugin and call the scripts using it. Note the use of the `dsl_definitions`
-section to avoid duplication in the script execution specification.
-
-After the blueprint has been updated, use the following command to install the
-fabric plugin:
-
-    cfy local install-plugins -p blueprint.yaml
-
-After the configuration update, please keep in mind to restart the VM with these commands:
-
-    vagrant halt
-    vagrant up
-
-After that, you'll be able to execute the scripts for the install/uninstall
-workflows as follows:
-
-    cfy local execute -w install
-    cfy local execute -w uninstall
-
-The scripts right now will fail because the `mongod` service is not available
-in the CentOS, but that will be fixed in a future step.
+A new file with the node type definition can be found in `types/systemd.yaml`.
+The `blueprint file is now more concise and easy to read.
 
 Whenever you're ready, the next task is:
 
-    - Move the `systemd` node type definition to a separate yaml file, so that
-      it can be reused in other blueprints if needed.
+    - Implement the create/delete lifecycle operations for the `mongod`
+      template, so that service file is available when the start/stop
+      operations are executed.
 
-Once you're done, please check out `step-07` branch to compare with the provided
+Once you're done, please check out `step-08` branch to compare with the provided
 solution and get instructions for the next step.
 
 Hints:
-- [Imports documentation](http://docs.getcloudify.org/3.4.0/blueprints/spec-imports/)
+- [Built-in workflows documentation](http://docs.getcloudify.org/3.4.0/workflows/built-in-workflows/)
