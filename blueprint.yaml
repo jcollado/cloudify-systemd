@@ -8,6 +8,10 @@ imports:
 node_types:
   systemd:
     derived_from: cloudify.nodes.SoftwareComponent
+    properties:
+      service_name:
+        type: string
+        description: systemd service name
 
 node_templates:
   vagrant_vm:
