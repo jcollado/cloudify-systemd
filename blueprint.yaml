@@ -22,3 +22,5 @@ node_templates:
     relationships:
       - type: cloudify.relationships.contained_in
         target: vagrant_vm
+    properties:
+      service_name: mongod
