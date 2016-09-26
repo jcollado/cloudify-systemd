@@ -1,30 +1,50 @@
-# Step 4 - Add property to node type
+# Step 5 - Add inputs to connect to SSH
 
-The `service_name` property can be seen in the `blueprint.yaml` file as
-follows:
+The `Vagrantfile` configuration has been updated to make sure that the VM
+always gets the same IP address:
 
-```yaml
-properties:
-    service_name:
-        type: string
-        description: systemd service name
+```ruby
+config.vm.network "private_network", ip: "192.168.33.10"
 ```
 
-Note that the `mongod` node template has been updated as well to set the
-property value to `mongod` which is the service name that will be needed to
-launch MongoDB later.
+this will be useful to connect to the VM through SSH.
+
+After the configuration update, please keep in mind to restart the VM with these commands:
+
+    vagrant halt
+    vagrant up
+
+The inputs needed to connect to the vagrant VM have been set as follows:
+
+```json
+{
+  "host_ip": "192.168.33.10",
+  "ssh_user": "vagrant",
+  "ssh_private_key_path": ".vagrant/machines/default/virtualbox/private_key"
+}
+```
+
+where the `host_ip` value is the same one set for vagrant.
+
+The schema for the values in the input file has been added to `blueprint.yaml`.
+
+Note that the cloudify environment now needs to be initialized with the inputs
+file to avoid validation errors:
+
+    cfy local init -p blueprint.yaml -i inputs.json
 
 Whenever you're ready, the next task is:
 
-    - Update vagrant configuration to ensure that the vagrant VM always gets
-      the same IP address
-    - Add `inputs.json` file with values for `host_ip`, `ssh_user` and
-      `ssh_private_key_path` suitable to connect to the vagrant VM
-    - Add input section to blueprint that defines the schema for those inputs
+    - Implement scripts to start/stop a service named `service_name` using
+      `systemctl`
+    - Update `systemd` node type to call the scripts for the start/stop
+      lifecycle operations using the fabric plugin
+    - Verify that the scripts are indeed called when the install/uninstall
+      workflows are executed
 
-Once you're done, please check out `step-05` branch to compare with the provided
+Once you're done, please check out `step-06` branch to compare with the provided
 solution and get instructions for the next step.
 
 Hints:
-- [Static IP configuration documentation](https://www.vagrantup.com/docs/networking/private_network.html#static-ip)
-- [Inputs documentation](http://docs.getcloudify.org/3.4.0/blueprints/spec-inputs/)
+- [Fabric plugin documentation](http://docs.getcloudify.org/3.4.0/plugins/fabric/)
+- [Built-in workflows documentation](http://docs.getcloudify.org/3.4.0/workflows/built-in-workflows/)
