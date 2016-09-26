@@ -1,21 +1,38 @@
-# Step 10 - Implement configure operation for systemd node type
+# Step 11 - Expose ports from VM
 
-The configure script is available `scripts/systemd/systemd-configure.py` while
-the yaml files for both the `systemd` node type and the example blueprint have
-been updated so that a systemd service is generated when needed.
+The VM configuration has been updated to expose the services ports as follows:
 
-Now the behavior is just as expected, but it's not easy to verify when MongoDB
-and the flask application are running. Being able to check that easily will be
-the goal of the next step.
+```ruby
+config.vm.network "forwarded_port", guest: 27017, host: 27017
+config.vm.network "forwarded_port", guest: 5000, host: 5000
+```
 
-Whenever you're ready, the next task is:
+After the configuration update, please keep in mind to restart the VM with
+these commands:
 
-    - Update the vagrant configuration file to expose MongoDB and flask
-      application ports to be able to check if the services are runnnig from
-      the host machine.
+    vagrant halt
+    vagrant up
 
-Once you're done, please check out `step-11` branch to compare with the provided
-solution and get instructions for the next step.
+The procedure to verify that the services are indeed running would be:
 
-Hints:
-- [Vagrant forwarded ports](https://www.vagrantup.com/docs/networking/forwarded_ports.html)
+- Install applications:
+
+        cfy local execute -w install
+
+- Verify that both `mongod` and the flask application are running:
+
+        $ curl localhost:5000
+        Hello Cloudify!
+        $ curl localhost:27017
+        It looks like you are trying to access MongoDB over HTTP on the native driver port.
+
+- Uninstall application:
+
+        cfy local execute -w uninstall
+
+- Verify that neither `mongod` nor the flask application are running:
+
+        $ curl localhost:5000
+        curl: (56) Recv failure: Connection reset by peer
+        $ curl localhost:27017
+        curl: (56) Recv failure: Connection reset by peer
